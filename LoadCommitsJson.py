@@ -8,14 +8,14 @@ jsonsCommit_NOUML = "./extraccion_analisis_repos/archivos_json/Repositorios_NOUM
 
 for file_uml in Path(jsonsCommit_UML).glob("*.json"):
     cmd = [
-        "mongoimport", "--db", "tfg_project", "--collection", "CommitsUML", str(file_uml.absolute())
+        "mongoimport", "--db", "tfg_project", "--collection", "Commits", str(file_uml.absolute())
      ]
     subprocess.Popen(cmd)
 
 
 for file_nouml in Path(jsonsCommit_NOUML).glob("*.json"):
     cmd = [
-        "mongoimport", "--db", "tfg_project", "--collection", "CommitsNOUML", str(file_nouml.absolute())
+        "mongoimport", "--db", "tfg_project", "--collection", "Commits", str(file_nouml.absolute())
     ] 
     subprocess.Popen(cmd)
 

@@ -1,8 +1,6 @@
 from fileinput import close
-from os import times
 import pymongo
 from pymongo import MongoClient
-from datetime import datetime
 
 # PASO 1: Conexión al Server de MongoDB Pasandole el host y el puerto
 mongoHost= "localhost"
@@ -20,8 +18,6 @@ collection = db["Commits"]
 
 Repositories = []
 dataCommits = []
-ReposUML = []
-ReposNOUML = []
 
 
 # Get the number of commits by repository
@@ -41,18 +37,14 @@ def getTypeRepos(repo):
       typefile = files['file']
       for f in filesUML:
         if (repo == item['origin']) and (f in typefile):
-          # if (repo not in ReposUML) and (repo not in ReposNOUML):
-            return "UML"
-            # ReposUML.append(repo)  
+          return "UML"
   
   for item in collection.find({"origin": repo}):
       for files in item['data']['files']:
         typefile = files['file']
         for f in filesUML:
           if (repo == item['origin']) and (f not in typefile):
-              # if (repo not in ReposNOUML) and (repo not in ReposUML):
-                # ReposNOUML.append(repo) 
-                return "NOUML" 
+            return "NOUML" 
 
 
 # Get the names of all contributors
@@ -72,7 +64,7 @@ def getRepositories(collection):
 
 
 def getDataCommit(repo):
-    print('commit')
+    # print('commit')
     dataAllCommits = {
       "url": repo,
       "typeRepository": getTypeRepos(repo),

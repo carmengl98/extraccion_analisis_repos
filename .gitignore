@@ -1,6 +1,7 @@
 # Files with the name of the repositories:
 *.xlsx
 *.csv
+*.txt
 
 __pycache__
 

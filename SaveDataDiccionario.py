@@ -17,60 +17,35 @@ collection=mydb["Commits"]
 
 collection_commit = {}
 collection_repo = {}
-Repositories = []
-Repos = []
-
-# Get the names of all repositories 
-def getRepositories(collection):
-#   print("hola")
-  for item in collection.find({}):
-    if not(item['origin']) in Repositories:
-      Repositories.append(item['origin'])
-  return Repositories
-
            
 # def insertCommitData(repos):
 #     # PASO 2: Conexión a la base de datos
 #     # PASO 3: Obtenemos una coleccion para trabajar con ella
 #     collection_commit=mydb["dataDicc_commit"]
-    
-#     for item in range(len(repos)):
+#     print(len(repos))
+#     for i in range(len(repos)):
 #             collection_commit.insert_one({
-#                  "dataCommit": PullDataCommits.getDataCommit(repos)[item],
+#                  "dataCommit": PullDataCommits.getDataCommit(repos)[i],
 #                 })
 
 
 def insertRepoData(repos):
     # PASO 2: Conexión a la base de datos
     # PASO 3: Obtenemos una coleccion para trabajar con ella
-    collection_repo=mydb["dataDicc_repos"]
-    
-    for item in range(len(repos)):
+    collection_repo=mydb["dataDicc_repo"]
+    print(len(repos))
+    for i in range(400):
         collection_repo.insert_one({
-                "dataRepository": PullDataRepos.getDataRepo(repos)[item],
+                "dataRepository": PullDataRepos.getDataRepo(repos)[i],
             })
    
 try:
     print("fh")
-    repos = getRepositories(collection)
-   
+    repos = PullDataRepos.Repositories
     insertRepoData(repos)
     # insertCommitData(repos)
     print("finish2")
 
-    # for data in collection.find({}):
-    #     if not(data['origin']) in Repositories:
-    #         Repositories.append(data['origin'])
-    
-    # for data in collection2.find({}):
-    #     if not(data['origin']) in Repos:
-    #         Repos.append(data['origin'])
-  
-    # print("Repos R--> ", len(Repositories))
-    # print("Repos C--> ", len(Repos))
-    # for r in Repos:
-    #     if r not in Repositories:
-    #         print (r)
 
     # PASO 4:(Create-Read-Update-Delete)
     # PASO FINAL: Cerrar la conexion
