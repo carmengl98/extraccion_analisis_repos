@@ -23,11 +23,21 @@ commitUML = AnalysisBBDD.checkNumCommit(dataDicc_commit,'UML')
 commitNOUML = AnalysisBBDD.checkNumCommit(dataDicc_commit,'NOUML')
 contributorsUML = AnalysisBBDD.checkNumContributors(dataDicc_commit ,'UML')
 contributorsNOUML = AnalysisBBDD.checkNumContributors(dataDicc_commit ,'NOUML')
-# sizeUML = AnalysisBBDD.checkNumSize(dataDicc_repo ,'UML')
-# sizeNOUML = AnalysisBBDD.checkNumSize(dataDicc_repo ,'NOUML')
-# starsUML = AnalysisBBDD.checkNumStars(dataDicc_repo ,'UML')
-# starsNOUML = AnalysisBBDD.checkNumStars(dataDicc_repo ,'NOUML')
-print(contributorsUML)
+forkUML = AnalysisBBDD.checkNumFork(dataDicc_repo ,'UML')
+forkNOUML = AnalysisBBDD.checkNumFork(dataDicc_repo ,'NOUML')
+sizeUML = AnalysisBBDD.checkNumSize(dataDicc_repo ,'UML')
+sizeNOUML = AnalysisBBDD.checkNumSize(dataDicc_repo ,'NOUML')
+starsUML = AnalysisBBDD.checkNumStars(dataDicc_repo ,'UML')
+starsNOUML = AnalysisBBDD.checkNumStars(dataDicc_repo ,'NOUML')
+
+print(forkUML)
+print(forkNOUML)
+print(' ')
+print(sizeUML)
+print(sizeNOUML)
+print(' ')
+print(starsUML)
+print(starsNOUML)
 
 def setBoxplot(data, label, limit):
     # Prepara los datos para el diagrama de caja.
@@ -40,14 +50,15 @@ def setBoxplot(data, label, limit):
     plt.show()
 
 
-
 setBoxplot(commitUML, 'Diagrama de Caja del número de commits UML',limit=1000)
 setBoxplot(commitNOUML, 'Diagrama de Caja del número de commits NOUML',limit=8000)
 setBoxplot(contributorsUML,'Diagrama de Caja del número de colaboradores UML', limit=100)
 setBoxplot(contributorsNOUML,'Diagrama de Caja del número de colaboradores NOUML', limit=250)
-# setBoxplot(sizeUML,'Diagrama de Caja del tamaño de los repositorios  UML', limit=100)
-# setBoxplot(sizeNOUML,'Diagrama de Caja del tamaño de los repositorios NOUML', limit=250)
-# setBoxplot(starsUML,'Diagrama de Caja del número de stars UML', limit=100)
-# setBoxplot(starsNOUML,'Diagrama de Caja del número de stars NOUML', limit=250)
+setBoxplot(forkUML,'Diagrama de Caja del número de fork por repositorios UML', limit=200)
+setBoxplot(forkNOUML,'Diagrama de Caja del número de fork por repositorios NOUML', limit=200)
+setBoxplot(sizeUML,'Diagrama de Caja del tamaño de los repositorios  UML', limit=500)
+setBoxplot(sizeNOUML,'Diagrama de Caja del tamaño de los repositorios NOUML', limit=500)
+setBoxplot(starsUML,'Diagrama de Caja del número de stars UML', limit=500)
+setBoxplot(starsNOUML,'Diagrama de Caja del número de stars NOUML', limit=8050)
 
 

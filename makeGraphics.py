@@ -25,8 +25,8 @@ licenseUML = AnalysisBBDD.checkLicense(dataDicc_repo ,'UML')
 licenseNOUML = AnalysisBBDD.checkLicense(dataDicc_repo ,'NOUML')
 developerUML = AnalysisBBDD.checkTypeDeveloper(dataDicc_repo , 'UML')
 developerNOUML = AnalysisBBDD.checkTypeDeveloper(dataDicc_repo, 'NOUML')
-forkUML = AnalysisBBDD.checkFork(dataDicc_repo ,'UML')
-forkNOUML = AnalysisBBDD.checkFork(dataDicc_repo ,'NOUML')
+# forkUML = AnalysisBBDD.checkNumFork(dataDicc_repo ,'UML')
+# forkNOUML = AnalysisBBDD.checkNumFork(dataDicc_repo ,'NOUML')
 languagesUML = AnalysisBBDD.checkLanguage(dataDicc_repo ,'UML')
 languagesNOUML = AnalysisBBDD.checkLanguage(dataDicc_repo ,'NOUML')
 
@@ -34,8 +34,8 @@ languagesNOUML = AnalysisBBDD.checkLanguage(dataDicc_repo ,'NOUML')
 
 numUML= reposUML['Número de repositorios']
 numNOUML= reposNOUML['Número de repositorios']
-print(numUML)
-print(numNOUML)
+print(licenseUML)
+print(licenseNOUML)
 
 
 def setGraphics(datosUML, datosNOUML, title):
@@ -72,8 +72,7 @@ def setGraphics(datosUML, datosNOUML, title):
     # Mostrar el gráfico
     plt.show()
 
-setGraphics(licenseUML, licenseNOUML, 'Con licencia vs Sin licencia')
+# setGraphics(licenseUML, licenseNOUML, 'Con licencia vs Sin licencia')
 setGraphics(developerUML, developerNOUML, 'Usurios vs Organización')
-setGraphics(forkUML, forkNOUML, 'Con fork vs Sin fork')
+# # setGraphics(forkUML, forkNOUML, 'Con fork vs Sin fork')
 setGraphics(languagesUML, languagesNOUML, 'Lenguajes principales')
-setGraphics(forkUML, forkNOUML, 'Con fork vs Sin fork')

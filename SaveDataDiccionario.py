@@ -1,7 +1,7 @@
 import pymongo
 from pymongo import MongoClient
 import PullDataRepos
-# import PullDataCommits
+import PullDataCommits
 
 
 # PASO 1: Conexión al Server de MongoDB Pasandole el host y el puerto
@@ -18,15 +18,15 @@ collection=mydb["Commits"]
 collection_commit = {}
 collection_repo = {}
            
-# def insertCommitData(repos):
-#     # PASO 2: Conexión a la base de datos
-#     # PASO 3: Obtenemos una coleccion para trabajar con ella
-#     collection_commit=mydb["dataDicc_commit"]
-#     print(len(repos))
-#     for i in range(len(repos)):
-#             collection_commit.insert_one({
-#                  "dataCommit": PullDataCommits.getDataCommit(repos)[i],
-#                 })
+def insertCommitData(repos):
+    # PASO 2: Conexión a la base de datos
+    # PASO 3: Obtenemos una coleccion para trabajar con ella
+    collection_commit=mydb["dataDicc_commit"]
+    print(len(repos))
+    for i in range(len(repos)):
+            collection_commit.insert_one({
+                 "dataCommit": PullDataCommits.getDataCommit(repos)[i],
+                })
 
 
 def insertRepoData(repos):
@@ -40,11 +40,11 @@ def insertRepoData(repos):
             })
    
 try:
-    print("fh")
+    print("Start the process")
     repos = PullDataRepos.Repositories
     insertRepoData(repos)
-    # insertCommitData(repos)
-    print("finish2")
+    insertCommitData(repos)
+    print("Finish the process")
 
 
     # PASO 4:(Create-Read-Update-Delete)

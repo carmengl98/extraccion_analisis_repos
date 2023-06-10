@@ -64,7 +64,6 @@ def getRepositories(collection):
 
 
 def getDataCommit(repo):
-    # print('commit')
     dataAllCommits = {
       "url": repo,
       "typeRepository": getTypeRepos(repo),
@@ -78,6 +77,7 @@ def getDataCommit(repo):
 
 try:
   repos = getRepositories(collection)
+  print("Start get data from the commits")
   for repo in repos:
     getDataCommit(repo)
 

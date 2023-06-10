@@ -43,6 +43,7 @@ def getRepositories(collection):
       Repositories.append(data['origin'])  
   return Repositories
 
+# Get diferents data of all repositories 
 def getOwner(repo):
   for item in collection_repo.find({"origin": repo[:-4]}):
     return item['search_fields']['owner']
@@ -90,23 +91,15 @@ def getDataRepo(repo):
     "size": getSize(repo),
     "stars": getStars(repo)
   }
-
-    # if len(dataRepositories) == 0:
-    #     dataRepositories.append(dataRepository)
-    # else:
-    #   if not any(dataRepository == diccionario for diccionario in dataRepositories):
   dataRepositories.append(dataRepository)
-    # print(dataRepositories)
   return dataRepositories
 
 try:
-  # data_repos = getRepositories(collection_repo)
+
   repo_commits = getRepositories(collection_commit)
-  print(len(repo_commits))
+  print("Start get data from the repositories")
   for repo in repo_commits:
     getDataRepo(repo)
-  # print("repoofiin")
-
 
 
 except pymongo.errors.ServerSelectionTimeoutError as errorTiempo:
@@ -114,6 +107,5 @@ except pymongo.errors.ServerSelectionTimeoutError as errorTiempo:
 except pymongo.errors.ConnectionFailure as errorConexion:
   print("Fallo al conectarse a mongodb "+errorConexion)
 
-# print(dataRepositories)
-# print(len(dataRepositories))
+
 

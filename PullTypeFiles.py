@@ -44,7 +44,6 @@ def getRepositories(collection):
       Repositories.append(data['origin'])  
   return Repositories
 
-  
 
 try:
   repos = getRepositories(collection_commit)
@@ -52,16 +51,9 @@ try:
     getTypeRepos(repo)
  
 
-
 except pymongo.errors.ServerSelectionTimeoutError as errorTiempo:
   print("Tiempo exedido "+errorTiempo)
 except pymongo.errors.ConnectionFailure as errorConexion:
   print("Fallo al conectarse a mongodb "+errorConexion)
 
 
-# print('*******************************************************************')
-# print("REPOS CON UML:", len(ReposUML))
-# print("REPOS CON UML:", ReposUML)
-# print('*******************************************************************')
-# # print("REPOS SIN UML:", len(ReposNOUML))
-# print("REPOS SIN UML:", ReposNOUML)

@@ -11,7 +11,7 @@ db = mongoClient["tfg_project"]
 #NOTA: dentro de la base de datos se encuentran las colecciones.
 
 # PASO 3: Obtenemos una coleccion para trabajar con ella
-dataDicc_repo = db["dataDicc_repos"]
+dataDicc_repo = db["dataDicc_repo"]
 dataDicc_commit = db["dataDicc_commit"]
 
 
@@ -35,7 +35,7 @@ def checkLicense(collection, developer):
     licenses['sin license'] = sin_license
     return licenses
 
-
+# check the type of owner for repository
 def checkTypeDeveloper(collection, developer):
     typeDeveloper = {
         "User": 0,
@@ -54,6 +54,8 @@ def checkNumFork(collection, developer):
     for item in collection.find({"dataRepository.typeRepository": developer}):      
         if (item['dataRepository']['fork']):
            numFork.append(item['dataRepository']['fork'])
+        else:
+            numFork.append(0)
     return numFork
 
 # check the size for repository
@@ -62,6 +64,8 @@ def checkNumSize(collection, developer):
     for item in collection.find({"dataRepository.typeRepository": developer}):      
         if (item['dataRepository']['size']):
             numSize.append(item['dataRepository']['size'])
+        else:
+            numSize.append(0)
     return numSize
 
 # check the number of commits for developer
@@ -70,6 +74,8 @@ def checkNumStars(collection, developer):
     for item in collection.find({"dataRepository.typeRepository": developer}):      
         if (item['dataRepository']['stars']):
             numStars.append(item['dataRepository']['stars'])
+        else:
+            numStars.append(0)
     return numStars
 
 # Check the developer's language
@@ -86,22 +92,18 @@ def checkLanguage(collection, developer):
         "Pascal": 0,
         "Swift": 0,
     }
-    other_count = 0
+    other_languages = 0
 
     for item in collection.find({"dataRepository.typeRepository": developer}):
         language = item['dataRepository']['language']
         if language in languages:
             languages[language] += 1
         else:
-            other_count += 1
+            other_languages += 1
 
-    languages["sin license"] = other_count
+    languages["Otros"] = other_languages
 
     return languages
-
-#     ###### COMPROBAAARR!!!!!
-# elif  item['Language'] == "D, Perl, ColdFusion, CSS, Ruby, Batchfile, Pascal, Objective-C, Makefile":
-        #     # repoMeatSimModel repoSE_Alberta, repoTDA593-MIRAR LENGUAGE
 
 
 # ----------------------------     COMMITS   ------------------------------
@@ -132,53 +134,45 @@ def getRoundPercentage(porcentaje):
     return "{:.2f}%".format(porcentaje_redondeado)
 
 def getPercentage(developer):
-        # numRepos = collection.count_documents({"dataRepository.typeRepository": developer})
-        numRepos = 400
+        numRepos = dataDicc_repo.count_documents({"dataRepository.typeRepository": developer})
+        
         namesLicense = checkLicense(dataDicc_repo,developer)
+        namesLanguage = checkLanguage(dataDicc_repo,developer)
         typeDevelopers = checkTypeDeveloper(dataDicc_repo, developer)
         numforks = checkNumFork(dataDicc_repo,developer)
         numSize = checkNumSize(dataDicc_repo,developer)
         numStars = checkNumStars(dataDicc_repo,developer)
-        language = checkLanguage(dataDicc_repo,developer)
-   
         numCommits = checkNumCommit(dataDicc_repo, developer)
         
-        print("----------------------------------------------------------------------------------")
-        num_doc = dataDicc_repo.count_documents({})
-        print("NUMERO DE DOC: ",  num_doc)
+        # print("*****************************************************************")
+        # num_doc = dataDicc_repo.count_documents({})
+        # print("NUMERO DE DOC: ",  num_doc)
        
-        print("NUMERO DE REPOS " + developer +": ", numRepos)
-        # print("D " + developer +": ",numRepos/num_doc)
+        # print("NUMERO DE REPOS " + developer +": ", numRepos)
         
+        # print("*****************************************************************")
         
      
-        for license, count in namesLicense.items():
-            print(license + ':', count)
+        # for license, count in namesLicense.items():
+        #     print(license + ':', count , '-->', getRoundPercentage(count/numRepos))
 
-        return license
+        # print("---------------------------------------")
 
-        # UML ---->POR AHORA LOS D UML SON DESARROLLADORES DE TYPE USER
-        # NOUML ---->POR AHORA LOS D NOUML SON DESARROLLADORES DE TYPE ORGANIZATION
-        # print("----------------------------------------------------------------------------------")
+        # for language, count in namesLanguage.items():
+        #         print(language + ':', count , '-->', getRoundPercentage(count/numRepos))
+
+       
+        # print("numforks: ", len(numforks), '-->', np.mean(numforks))
+        # print("numSize: ", len(numSize), '-->', np.mean(numSize))
+        # print("numStars: ", len(numStars), '-->', np.mean(numStars))
+        # print("numCommits: ", len(numCommits), '-->', np.mean(numCommits))
+
+        # print("User: ", typeDevelopers['User'] , '-->', getRoundPercentage( typeDevelopers['User']/numRepos))
+        # print("Organization: ", typeDevelopers['Organization'] , '-->', getRoundPercentage( typeDevelopers['Organization']/numRepos))
+        
         # print("D " + developer + " CON LICENCIA: ", getRoundPercentage(License["Con licencia"]/numRepos))
         # print("D "+ developer + " SIN LICENCIA: ", getRoundPercentage(License["Sin licencia"]/numRepos))
-        # print("D " + developer + " TYPE USER : ", getRoundPercentage(typeDeveloper["Usuario"]/numRepos))
-        # print("D " + developer + "  TYPE ORGANIZATION: ", getRoundPercentage(typeDeveloper["Organización"]/numRepos))
-        # print("D " + developer + " NUM COMMITS: ", getRoundPercentage(numCommit["Commits"]/numRepos))
-        print("D " + developer + " CON FORK: ", getRoundPercentage(fork/numRepos))
-        # print("D " + developer + " SIN FORK: ", getRoundPercentage(fork["Sin Fork"]/numRepos))
-        # print("D " + developer + " JavaScript: ", getRoundPercentage(language["JavaScript"]/numRepos))
-        # print("D " + developer + " Java: ", getRoundPercentage(language["Java"]/numRepos))
-        # print("D " + developer + " Python: ", getRoundPercentage(language["Python"]/numRepos))
-        # print("D " + developer + " C: ", getRoundPercentage(language["C"]/numRepos))
-        # print("D " + developer + " C++: ", getRoundPercentage(language["C++"]/numRepos))
-        # print("D " + developer + " HTML: ", getRoundPercentage(language["HTML"]/numRepos))
-        # print("D " + developer + " PHP: ", getRoundPercentage(language["PHP"]/numRepos))
-        # print("D " + developer + " Ruby: ",  getRoundPercentage(language["Ruby"]/numRepos))
-        # print("D " + developer + " Pascal: ", getRoundPercentage(language["Pascal"]/numRepos))
-        # print("D " + developer + " Swift: ", getRoundPercentage(language["Swift"]/numRepos))
-        # print("D " + developer + " Otros: ", getRoundPercentage(language["Otros"]/numRepos))
-        # # print("D  " + developer + " D, CSS, PASCAL: ", getRoundPercentage(Ruby/numRepos))
+        
         
      
 getPercentage('UML')
