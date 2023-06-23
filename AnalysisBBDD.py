@@ -12,28 +12,41 @@ db = mongoClient["tfg_project"]
 
 # PASO 3: Obtenemos una coleccion para trabajar con ella
 dataDicc_repo = db["dataDicc_repo"]
-dataDicc_commit = db["dataDicc_commit"]
+data_commit = db["data_commit"]
 
 
 # --------------------------      REPOSITORIES     ----------------------------
 
 # check if the developer has a licence
-def checkLicense(collection, developer):
-    licenses = {}
-    sin_license = 0
-    for item in collection.find({"dataRepository.typeRepository": developer}):
-        license_data = item['dataRepository']['license']
-        if license_data != None:
-            license_name = license_data['name']
-            if license_name in licenses:
-                licenses[license_name] += 1
-            else:
-                licenses[license_name] = 1
-        else:
-            sin_license += 1
+# def checkLicense(collection, developer):
+#     licenses = {}
+#     sin_license = 0
+#     for item in collection.find({}):
+#         license_data = item['dataRepository']['license']
+#         if license_data != None:
+#             license_name = license_data['name']
+#             if license_name in licenses:
+#                 licenses[license_name] += 1
+#             else:
+#                 licenses[license_name] = 1
+#         else:
+#             sin_license += 1
 
-    licenses['sin license'] = sin_license
-    return licenses
+#     licenses['sin license'] = sin_license
+#     return licenses
+
+# check if the developer has a licence
+def checkLicense(collection, developer):
+    hasLicense = {
+        "Con license": 0,
+        "Sin license": 0
+    }
+    for item in collection.find({}):  
+        if type(item['dataRepository']['license']) is not dict:
+            hasLicense["Con license"] += 1
+        else:
+            hasLicense["Sin license"] += 1
+    return hasLicense
 
 # check the type of owner for repository
 def checkTypeDeveloper(collection, developer):
@@ -41,7 +54,7 @@ def checkTypeDeveloper(collection, developer):
         "User": 0,
         "Organization":0
     }
-    for item in collection.find({"dataRepository.typeRepository": developer}):      
+    for item in collection.find({}):      
         if (item['dataRepository']['typeDeveloper'] == 'User'):
             typeDeveloper["User"] += 1
         elif(item['dataRepository']['typeDeveloper'] == 'Organization'):
@@ -50,18 +63,24 @@ def checkTypeDeveloper(collection, developer):
 
 # check if the number of Fork for repository
 def checkNumFork(collection, developer):
-    numFork = []
-    for item in collection.find({"dataRepository.typeRepository": developer}):      
-        if (item['dataRepository']['fork']):
-           numFork.append(item['dataRepository']['fork'])
+    # numFork = []
+    hasFork = {
+        "Con Fork": 0,
+        "Sin Fork":0
+    }
+    for item in collection.find({}):      
+        if (item['dataRepository']['fork'] != 0):
+        #    numFork.append(item['dataRepository']['fork'])
+            hasFork["Con Fork"] += 1
         else:
-            numFork.append(0)
-    return numFork
+            # numFork.append(0)
+            hasFork["Sin Fork"] += 1
+    return hasFork
 
 # check the size for repository
 def checkNumSize(collection, developer):
     numSize = []
-    for item in collection.find({"dataRepository.typeRepository": developer}):      
+    for item in collection.find({}):      
         if (item['dataRepository']['size']):
             numSize.append(item['dataRepository']['size'])
         else:
@@ -71,12 +90,17 @@ def checkNumSize(collection, developer):
 # check the number of commits for developer
 def checkNumStars(collection, developer):
     numStars = []
-    for item in collection.find({"dataRepository.typeRepository": developer}):      
-        if (item['dataRepository']['stars']):
-            numStars.append(item['dataRepository']['stars'])
+    hasStars = {
+        "Con Stars": 0,
+        "Sin Stars":0
+    }
+    for item in collection.find({}):      
+        if (item['dataRepository']['stars'] != 0):
+            # numStars.append(item['dataRepository']['stars'])
+            hasStars["Con Stars"] += 1
         else:
-            numStars.append(0)
-    return numStars
+            hasStars["Sin Stars"] += 1
+    return hasStars
 
 # Check the developer's language
 def checkLanguage(collection, developer):
@@ -89,12 +113,12 @@ def checkLanguage(collection, developer):
         "HTML": 0,
         "PHP": 0,
         "Ruby": 0,
-        "Pascal": 0,
+        "TypeScript": 0,
         "Swift": 0,
     }
     other_languages = 0
 
-    for item in collection.find({"dataRepository.typeRepository": developer}):
+    for item in collection.find({}):
         language = item['dataRepository']['language']
         if language in languages:
             languages[language] += 1
@@ -170,8 +194,8 @@ def getPercentage(developer):
         # print("User: ", typeDevelopers['User'] , '-->', getRoundPercentage( typeDevelopers['User']/numRepos))
         # print("Organization: ", typeDevelopers['Organization'] , '-->', getRoundPercentage( typeDevelopers['Organization']/numRepos))
         
-        # print("D " + developer + " CON LICENCIA: ", getRoundPercentage(License["Con licencia"]/numRepos))
-        # print("D "+ developer + " SIN LICENCIA: ", getRoundPercentage(License["Sin licencia"]/numRepos))
+        # # print("D " + developer + " CON LICENCIA: ", getRoundPercentage(License["Con licencia"]/numRepos))
+        # # print("D "+ developer + " SIN LICENCIA: ", getRoundPercentage(License["Sin licencia"]/numRepos))
         
         
      

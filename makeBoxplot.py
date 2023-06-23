@@ -17,12 +17,12 @@ db = mongoClient["tfg_project"]
 
 # PASO 3: Obtenemos una coleccion para trabajar con ella
 dataDicc_repo = db["dataDicc_repo"]
-dataDicc_commit = db["dataDicc_commit"]
+data_commit = db["dataDicc_commit"]
 
-commitUML = AnalysisBBDD.checkNumCommit(dataDicc_commit,'UML')
-commitNOUML = AnalysisBBDD.checkNumCommit(dataDicc_commit,'NOUML')
-contributorsUML = AnalysisBBDD.checkNumContributors(dataDicc_commit ,'UML')
-contributorsNOUML = AnalysisBBDD.checkNumContributors(dataDicc_commit ,'NOUML')
+commitUML = AnalysisBBDD.checkNumCommit(data_commit,'UML')
+commitNOUML = AnalysisBBDD.checkNumCommit(data_commit,'NOUML')
+contributorsUML = AnalysisBBDD.checkNumContributors(data_commit ,'UML')
+contributorsNOUML = AnalysisBBDD.checkNumContributors(data_commit ,'NOUML')
 forkUML = AnalysisBBDD.checkNumFork(dataDicc_repo ,'UML')
 forkNOUML = AnalysisBBDD.checkNumFork(dataDicc_repo ,'NOUML')
 sizeUML = AnalysisBBDD.checkNumSize(dataDicc_repo ,'UML')
@@ -30,35 +30,24 @@ sizeNOUML = AnalysisBBDD.checkNumSize(dataDicc_repo ,'NOUML')
 starsUML = AnalysisBBDD.checkNumStars(dataDicc_repo ,'UML')
 starsNOUML = AnalysisBBDD.checkNumStars(dataDicc_repo ,'NOUML')
 
-print(forkUML)
-print(forkNOUML)
-print(' ')
 print(sizeUML)
 print(sizeNOUML)
-print(' ')
-print(starsUML)
-print(starsNOUML)
-
-def setBoxplot(data, label, limit):
+def setBoxplot(data, label, xlabel, ylabel, limit):
     # Prepara los datos para el diagrama de caja.
     plt.boxplot(data, whis=1)
     plt.ylim(bottom=0,top=limit) # Establecer el límite máximo en el eje y
 
-    plt.xlabel('Datos')
-    plt.ylabel('Valores')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
     plt.title(label)
     plt.show()
 
 
-setBoxplot(commitUML, 'Diagrama de Caja del número de commits UML',limit=1000)
-setBoxplot(commitNOUML, 'Diagrama de Caja del número de commits NOUML',limit=8000)
-setBoxplot(contributorsUML,'Diagrama de Caja del número de colaboradores UML', limit=100)
-setBoxplot(contributorsNOUML,'Diagrama de Caja del número de colaboradores NOUML', limit=250)
-setBoxplot(forkUML,'Diagrama de Caja del número de fork por repositorios UML', limit=200)
-setBoxplot(forkNOUML,'Diagrama de Caja del número de fork por repositorios NOUML', limit=200)
-setBoxplot(sizeUML,'Diagrama de Caja del tamaño de los repositorios  UML', limit=500)
-setBoxplot(sizeNOUML,'Diagrama de Caja del tamaño de los repositorios NOUML', limit=500)
-setBoxplot(starsUML,'Diagrama de Caja del número de stars UML', limit=500)
-setBoxplot(starsNOUML,'Diagrama de Caja del número de stars NOUML', limit=8050)
+# setBoxplot(commitUML, 'Diagrama de Caja del número de commits UML', 'Repositorios','Número de commits', limit=4000)
+# setBoxplot(commitNOUML, 'Diagrama de Caja del número de commits NOUML','Repositorios','Número de commits', limit=4000)
+# setBoxplot(contributorsUML,'Diagrama de Caja del número de colaboradores UML','Repositorios', 'Número de colaboradores', limit=100)
+# setBoxplot(contributorsNOUML,'Diagrama de Caja del número de colaboradores NOUML', 'Repositorios', 'Número de colaboradores', limit=100)
+setBoxplot(sizeUML,'Diagrama de Caja del tamaño de los repositorios  UML','Repositorios','Tamaño del repositorio', limit=140000)
+setBoxplot(sizeNOUML,'Diagrama de Caja del tamaño de los repositorios NOUML', 'Repositorios', 'Tamaño del repositorio', limit=140000)
 
 

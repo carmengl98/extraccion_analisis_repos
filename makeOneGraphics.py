@@ -30,11 +30,21 @@ forkUML = AnalysisBBDD.checkNumFork(data_repoUML ,'UML')
 forkNOUML = AnalysisBBDD.checkNumFork(data_repoNOUML ,'NOUML')
 languagesUML = AnalysisBBDD.checkLanguage(data_repoUML ,'UML')
 languagesNOUML = AnalysisBBDD.checkLanguage(data_repoNOUML ,'NOUML')
+starsUML = AnalysisBBDD.checkNumStars(data_repoUML ,'UML')
+starsNOUML = AnalysisBBDD.checkNumStars(data_repoNOUML ,'NOUML')
 
 
 numUML= reposUML['Número de repositorios']
 numNOUML= reposNOUML['Número de repositorios']
 
+print(licenseUML)
+print(licenseNOUML)
+# print(developerUML)
+# print(developerNOUML)
+print(forkUML)
+print(forkNOUML)
+# print(languagesUML)
+# print(languagesNOUML)
 
 def setGraphics(datosUML, datosNOUML, title):
     
@@ -45,35 +55,26 @@ def setGraphics(datosUML, datosNOUML, title):
     etiquetas = list(datosUML.keys())
     valoresUML = list(datosUML.values())
     valoresNOUML = list(datosNOUML.values())
-
-    totalUML = sum(valoresUML)
-    porcentajes_UML = [p/totalUML * 100 for p in valoresUML]
-
-    totalNOUML = sum(valoresNOUML)
-    porcentajes_NOUML = [p/totalNOUML * 100 for p in valoresNOUML]
+    
+    total = sum(valoresUML+ valoresNOUML)
+    porcentajes_UML = [valor/total* 100 for valor in valoresUML]
+    porcentajes_NOUML = [valor/total * 100 for valor in valoresNOUML]
     print(porcentajes_UML)
     print(porcentajes_NOUML)
-    
     # Crear una lista de índices para la posición de las barras
     index = np.arange(len(etiquetas))
 
     # Crear gráfico de barras juntas
-    plt.bar(index, porcentajes_UML, bar_width, label='UML', color='#3366FF')
-    plt.bar(index + bar_width, porcentajes_NOUML, bar_width, label='NO UML', color='#87CEFA')
+    plt.bar(index, porcentajes_UML, bar_width, bottom=porcentajes_NOUML, label='UML', color='#3366FF')
+    plt.bar(index, porcentajes_NOUML, bar_width, label='NO UML', color='#87CEFA')
     
-    # Personalizar el gráfico
-    if (etiquetas != ["Commits"]):
-        # Establecer el rango del eje y
-        plt.ylim(0, 100)
-
     plt.title(title)
     plt.ylabel('Repositorios')
-
+    
     # Aplicar el formateador al eje y
     plt.gca().set_yticklabels(['{:.0f}%'.format(valor) for valor in plt.gca().get_yticks()])
-    
-    # Crear gráfico de barras separadas
-    plt.xticks(index + bar_width/2, etiquetas)
+    # Crear gráfico de barras juntas
+    plt.xticks(index, etiquetas)
 
     plt.legend()
 
@@ -83,7 +84,8 @@ def setGraphics(datosUML, datosNOUML, title):
     # Mostrar el gráfico
     plt.show()
 
-# setGraphics(licenseUML, licenseNOUML, 'Con licencia vs Sin licencia')
-setGraphics(developerUML, developerNOUML, 'Usurios vs Organización')
-setGraphics(forkUML, forkNOUML, 'Con fork vs Sin fork')
-setGraphics(languagesUML, languagesNOUML, 'Lenguajes principales')
+setGraphics(licenseUML, licenseNOUML, 'Con licencia vs Sin licencia')
+# setGraphics(developerUML, developerNOUML, 'Usurios individuales vs Organización')
+# setGraphics(languagesUML, languagesNOUML, 'Lenguajes principales')
+# setGraphics(forkUML, forkNOUML, 'Con fork vs Sin fork')
+# setGraphics(starsUML, starsNOUML, 'Con stars vs Sin stars')
