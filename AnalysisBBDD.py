@@ -11,37 +11,16 @@ db = mongoClient["tfg_project"]
 #NOTA: dentro de la base de datos se encuentran las colecciones.
 
 # PASO 3: Obtenemos una coleccion para trabajar con ella
-dataDicc_repo = db["dataDicc_repo"]
-data_commit = db["data_commit"]
+collection_analysis = db["data_analysis"]
 
-
-# --------------------------      REPOSITORIES     ----------------------------
 
 # check if the developer has a licence
-# def checkLicense(collection, developer):
-#     licenses = {}
-#     sin_license = 0
-#     for item in collection.find({}):
-#         license_data = item['dataRepository']['license']
-#         if license_data != None:
-#             license_name = license_data['name']
-#             if license_name in licenses:
-#                 licenses[license_name] += 1
-#             else:
-#                 licenses[license_name] = 1
-#         else:
-#             sin_license += 1
-
-#     licenses['sin license'] = sin_license
-#     return licenses
-
-# check if the developer has a licence
-def checkLicense(collection, developer):
+def checkNumLicense(has_UML):
     hasLicense = {
         "Con license": 0,
         "Sin license": 0
     }
-    for item in collection.find({}):  
+    for item in collection_analysis.find({'dataRepository.has_UML': has_UML}):  
         if type(item['dataRepository']['license']) is not dict:
             hasLicense["Con license"] += 1
         else:
@@ -49,12 +28,12 @@ def checkLicense(collection, developer):
     return hasLicense
 
 # check the type of owner for repository
-def checkTypeDeveloper(collection, developer):
+def checkTypeDeveloper(has_UML):
     typeDeveloper = {
         "User": 0,
         "Organization":0
     }
-    for item in collection.find({}):      
+    for item in collection_analysis.find({'dataRepository.has_UML': has_UML}):      
         if (item['dataRepository']['typeDeveloper'] == 'User'):
             typeDeveloper["User"] += 1
         elif(item['dataRepository']['typeDeveloper'] == 'Organization'):
@@ -62,48 +41,43 @@ def checkTypeDeveloper(collection, developer):
     return typeDeveloper
 
 # check if the number of Fork for repository
-def checkNumFork(collection, developer):
-    # numFork = []
+def checkNumFork(has_UML):
     hasFork = {
         "Con Fork": 0,
         "Sin Fork":0
     }
-    for item in collection.find({}):      
+    for item in collection_analysis.find({'dataRepository.has_UML': has_UML}):      
         if (item['dataRepository']['fork'] != 0):
-        #    numFork.append(item['dataRepository']['fork'])
             hasFork["Con Fork"] += 1
         else:
-            # numFork.append(0)
             hasFork["Sin Fork"] += 1
     return hasFork
 
 # check the size for repository
-def checkNumSize(collection, developer):
+def checkNumSize(has_UML):
     numSize = []
-    for item in collection.find({}):      
+    for item in collection_analysis.find({'dataRepository.has_UML': has_UML}):  
         if (item['dataRepository']['size']):
             numSize.append(item['dataRepository']['size'])
         else:
             numSize.append(0)
     return numSize
 
-# check the number of commits for developer
-def checkNumStars(collection, developer):
-    numStars = []
+# check the number of commits for repository
+def checkNumStars(has_UML):
     hasStars = {
         "Con Stars": 0,
         "Sin Stars":0
     }
-    for item in collection.find({}):      
+    for item in collection_analysis.find({'dataRepository.has_UML': has_UML}):      
         if (item['dataRepository']['stars'] != 0):
-            # numStars.append(item['dataRepository']['stars'])
             hasStars["Con Stars"] += 1
         else:
             hasStars["Sin Stars"] += 1
     return hasStars
 
-# Check the developer's language
-def checkLanguage(collection, developer):
+# Check the repository's language
+def checkLanguage(has_UML):
     languages = {
         "JavaScript": 0,
         "Java": 0,
@@ -118,7 +92,7 @@ def checkLanguage(collection, developer):
     }
     other_languages = 0
 
-    for item in collection.find({}):
+    for item in collection_analysis.find({'dataRepository.has_UML': has_UML}):
         language = item['dataRepository']['language']
         if language in languages:
             languages[language] += 1
@@ -132,77 +106,73 @@ def checkLanguage(collection, developer):
 
 # ----------------------------     COMMITS   ------------------------------
 
-# check the number of commits for developer
-def checkNumCommit(collection, developer):
+# check the number of commits for repository
+def checkNumCommit(has_UML):
     numCommit = []
-    for item in collection.find({"dataCommit.typeRepository": developer}):      
-        if (item['dataCommit']['commit']):
-            numCommit.append(item['dataCommit']['commit'])
+    for item in collection_analysis.find({"dataCommits.has_UML": has_UML}):   
+        if (item['dataCommits']['commit']):
+            numCommit.append(item['dataCommits']['commit'])
     return numCommit
 
 # check the number of colaborators for repository
-def checkNumContributors(collection, developer):
+def checkNumContributors(has_UML):
     numContributors = []
-    for item in collection.find({"dataCommit.typeRepository": developer}):     
-        if (item['dataCommit']['contributors']):
-            numContributors.append(item['dataCommit']['contributors'])
+    for item in collection_analysis.find({"dataCommits.has_UML": has_UML}):     
+        if (item['dataCommits']['contributors']):
+            numContributors.append(item['dataCommits']['contributors'])
     return numContributors
 
 
-def getNumRepos(collection, developer):    
-   return {"Número de repositorios":collection.count_documents({"dataRepository.typeRepository": developer})}
+def getNumRepos(has_UML):    
+   return {"Número de repositorios":collection_analysis.count_documents({"dataRepository.has_UML": has_UML})}
 
 def getRoundPercentage(porcentaje):
     porcentaje_multi = porcentaje * 100
     porcentaje_redondeado = round(porcentaje_multi, 2)
     return "{:.2f}%".format(porcentaje_redondeado)
 
-def getPercentage(developer):
-        numRepos = dataDicc_repo.count_documents({"dataRepository.typeRepository": developer})
+def getPercentage(has_UML):
+        numRepos = collection_analysis.count_documents({"dataRepository.has_UML": has_UML})
         
-        namesLicense = checkLicense(dataDicc_repo,developer)
-        namesLanguage = checkLanguage(dataDicc_repo,developer)
-        typeDevelopers = checkTypeDeveloper(dataDicc_repo, developer)
-        numforks = checkNumFork(dataDicc_repo,developer)
-        numSize = checkNumSize(dataDicc_repo,developer)
-        numStars = checkNumStars(dataDicc_repo,developer)
-        numCommits = checkNumCommit(dataDicc_repo, developer)
-        
+        numLicense = checkNumLicense(has_UML)
+        namesLanguage = checkLanguage(has_UML)
+        typeDevelopers = checkTypeDeveloper(has_UML)
+        numforks = checkNumFork(has_UML)
+        numSize = checkNumSize(has_UML)
+        numStars = checkNumStars(has_UML)
+        numCommits = checkNumCommit(has_UML)
+        numContributors = checkNumContributors(has_UML)
         # print("*****************************************************************")
-        # num_doc = dataDicc_repo.count_documents({})
+        # num_doc = collection_analysis.count_documents({})
         # print("NUMERO DE DOC: ",  num_doc)
        
-        # print("NUMERO DE REPOS " + developer +": ", numRepos)
+        # print("NUMERO DE REPOS "  ": ", numRepos)
         
         # print("*****************************************************************")
-        
-     
-        # for license, count in namesLicense.items():
-        #     print(license + ':', count , '-->', getRoundPercentage(count/numRepos))
-
-        # print("---------------------------------------")
 
         # for language, count in namesLanguage.items():
         #         print(language + ':', count , '-->', getRoundPercentage(count/numRepos))
 
-       
-        # print("numforks: ", len(numforks), '-->', np.mean(numforks))
-        # print("numSize: ", len(numSize), '-->', np.mean(numSize))
-        # print("numStars: ", len(numStars), '-->', np.mean(numStars))
-        # print("numCommits: ", len(numCommits), '-->', np.mean(numCommits))
-
+        # print("Con License: ", numLicense['Con license'] , '-->', getRoundPercentage( numLicense['Con license']/numRepos))
+        # print("Sin License: ", numLicense['Sin license'] , '-->', getRoundPercentage( numLicense['Sin license']/numRepos))
         # print("User: ", typeDevelopers['User'] , '-->', getRoundPercentage( typeDevelopers['User']/numRepos))
         # print("Organization: ", typeDevelopers['Organization'] , '-->', getRoundPercentage( typeDevelopers['Organization']/numRepos))
-        
-        # # print("D " + developer + " CON LICENCIA: ", getRoundPercentage(License["Con licencia"]/numRepos))
-        # # print("D "+ developer + " SIN LICENCIA: ", getRoundPercentage(License["Sin licencia"]/numRepos))
-        
-        
+        # print("Con Fork: ", numforks['Con Fork'] , '-->', getRoundPercentage( numforks['Con Fork']/numRepos))
+        # print("Sin Fork: ", numforks['Sin Fork'] , '-->', getRoundPercentage( numforks['Sin Fork']/numRepos))
+        # print("Con Stars: ", numStars['Con Stars'] , '-->', getRoundPercentage( numStars['Con Stars']/numRepos))
+        # print("Sin Stars: ", numStars['Sin Stars'] , '-->', getRoundPercentage( numStars['Sin Stars']/numRepos))
+    
+
+        # print("numSize: ", len(numSize), '-->', np.mean(numSize))
+        # print("numCommits: ", len(numCommits), '-->', np.mean(numCommits))
+        # print("numContributors: ", len(numContributors), '-->', np.mean(numContributors))
+
      
-getPercentage('UML')
-getPercentage('NOUML')
+getPercentage(True)
+# print("*****************************************************************")
+getPercentage(False)
 
 # PASO 4:(Create-Read-Update-Delete)
 # PASO FINAL: Cerrar la conexion
-mongoClient.close()
+# mongoClient.close()
 

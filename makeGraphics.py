@@ -1,35 +1,31 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import AnalysisBBDD
-import pymongo
-from pymongo import MongoClient
+# from pymongo import MongoClient
 
-# PASO 1: Conexión al Server de MongoDB Pasandole el host y el puerto
-mongoHost= "localhost"
-mongoPort=27017
-mongoClient = MongoClient(mongoHost,mongoPort,serverSelectionTimeoutMS=1000)
+# # PASO 1: Conexión al Server de MongoDB Pasandole el host y el puerto
+# mongoHost= "localhost"
+# mongoPort=27017
+# mongoClient = MongoClient(mongoHost,mongoPort,serverSelectionTimeoutMS=1000)
 
+# # PASO 2: Conexión a la base de datos
+# db = mongoClient["tfg_project"]
+# #NOTA: dentro de la base de datos se encuentran las colecciones.
 
-# PASO 2: Conexión a la base de datos
-db = mongoClient["tfg_project"]
-#NOTA: dentro de la base de datos se encuentran las colecciones.
-
-# PASO 3: Obtenemos una coleccion para trabajar con ella
-data_repoUML = db["data_repoUML"]
-data_repoNOUML = db["data_repoNOUML"]
-data_commit = db["data_commit"]
 
 # Data pull from the repositories
-reposUML = AnalysisBBDD.getNumRepos(data_repoUML ,'UML')
-reposNOUML = AnalysisBBDD.getNumRepos(data_repoNOUML ,'NOUML')
-licenseUML = AnalysisBBDD.checkLicense(data_repoUML ,'UML')
-licenseNOUML = AnalysisBBDD.checkLicense(data_repoNOUML ,'NOUML')
-developerUML = AnalysisBBDD.checkTypeDeveloper(data_repoUML , 'UML')
-developerNOUML = AnalysisBBDD.checkTypeDeveloper(data_repoNOUML, 'NOUML')
-forkUML = AnalysisBBDD.checkNumFork(data_repoUML ,'UML')
-forkNOUML = AnalysisBBDD.checkNumFork(data_repoNOUML ,'NOUML')
-languagesUML = AnalysisBBDD.checkLanguage(data_repoUML ,'UML')
-languagesNOUML = AnalysisBBDD.checkLanguage(data_repoNOUML ,'NOUML')
+reposUML = AnalysisBBDD.getNumRepos(True)
+reposNOUML = AnalysisBBDD.getNumRepos(False)
+licenseUML = AnalysisBBDD.checkNumLicense(True)
+licenseNOUML = AnalysisBBDD.checkNumLicense(False)
+developerUML = AnalysisBBDD.checkTypeDeveloper( True)
+developerNOUML = AnalysisBBDD.checkTypeDeveloper(False)
+forkUML = AnalysisBBDD.checkNumFork(True)
+forkNOUML = AnalysisBBDD.checkNumFork(False)
+languagesUML = AnalysisBBDD.checkLanguage(True)
+languagesNOUML = AnalysisBBDD.checkLanguage(False)
+starsUML = AnalysisBBDD.checkNumStars(True)
+starsNOUML = AnalysisBBDD.checkNumStars(False)
 
 
 numUML= reposUML['Número de repositorios']
@@ -83,7 +79,9 @@ def setGraphics(datosUML, datosNOUML, title):
     # Mostrar el gráfico
     plt.show()
 
-# setGraphics(licenseUML, licenseNOUML, 'Con licencia vs Sin licencia')
-setGraphics(developerUML, developerNOUML, 'Usurios vs Organización')
-setGraphics(forkUML, forkNOUML, 'Con fork vs Sin fork')
+
+setGraphics(licenseUML, licenseNOUML, 'Con licencia vs Sin licencia')
+setGraphics(developerUML, developerNOUML, 'Usurios individuales vs Organización')
 setGraphics(languagesUML, languagesNOUML, 'Lenguajes principales')
+setGraphics(forkUML, forkNOUML, 'Con fork vs Sin fork')
+setGraphics(starsUML, starsNOUML, 'Con stars vs Sin stars')

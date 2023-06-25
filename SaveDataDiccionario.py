@@ -1,7 +1,8 @@
 import pymongo
 from pymongo import MongoClient
-import PullDataRepos
-import PullDataCommits
+from tqdm import tqdm
+# import PullDataRepos
+# # import PullDataCommits
 
 
 # PASO 1: Conexión al Server de MongoDB Pasandole el host y el puerto
@@ -9,41 +10,49 @@ mongoHost= "localhost"
 mongoPort=27017
 
 mongoClient = MongoClient(mongoHost, mongoPort, serverSelectionTimeoutMS=1000)
+
 # PASO 2: Conexión a la base de datos
 # PASO 3: Obtenemos una coleccion para trabajar con ella
 mydb=mongoClient["tfg_project"]
-collection=mydb["Commits"]
+collection = mydb["data_repo"]
+
+collection_data = {}
 
 
-collection_commit = {}
-collection_repo = {}
-           
-def insertCommitData(repos):
+def insertData():
     # PASO 2: Conexión a la base de datos
-    # PASO 3: Obtenemos una coleccion para trabajar con ella
-    collection_commit=mydb["dataDicc_commit"]
-    print(len(repos))
-    for i in range(len(repos)):
-            collection_commit.insert_one({
-                 "dataCommit": PullDataCommits.getDataCommit(repos)[i],
-                })
+    # PASO 3: Obtenemos una coleccion para intoducir los datos
+    collection_data=mydb["data_analysis"]
+    
+    total_repositories = collection.count_documents({})
+    for item in tqdm(collection.find({}), total=total_repositories):
+        collection_data.insert_one({
+            "dataRepository" : {
+            "url": item['origin'],
+            "has_UML": item['uml'],
+            "owner":item['search_fields']['owner'],
+            "repo": item['search_fields']['repo'],
+            "language": item['data']['language'],
+            "license": item['data']['license'],
+            "typeDeveloper": item['data']['owner']['type'],
+            "fork": item['data']['forks'],
+            "size": item['data']['size'],
+            "stars": item['data']["stargazers_count"]
+            },
+            "dataCommits" : {
+                "url": item['origin'],
+                "has_UML": item['uml'],
+                "contributors": item['num_contributors'],
+                "commit": item['num_commits'],
+            }
+        })
 
-
-def insertRepoData(repos):
-    # PASO 2: Conexión a la base de datos
-    # PASO 3: Obtenemos una coleccion para trabajar con ella
-    collection_repo=mydb["dataDicc_repo"]
-    print(len(repos))
-    for i in range(400):
-        collection_repo.insert_one({
-                "dataRepository": PullDataRepos.getDataRepo(repos)[i],
-            })
+        
    
 try:
     print("Start the process")
-    repos = PullDataRepos.Repositories
-    insertRepoData(repos)
-    insertCommitData(repos)
+    insertData()
+   
     print("Finish the process")
 
 
